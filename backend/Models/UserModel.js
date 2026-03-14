@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+
 
 const userSchema= new mongoose.Schema(
 {
@@ -7,7 +8,9 @@ const userSchema= new mongoose.Schema(
     password:{type:String,required:true},
     email:{type:String,required:true},
     class:{type:String},
-    phone_number:{type:Number},
+    subjects:{type:Array},
+    Board: String,
+    tasks:[{type:Schema.Types.ObjectId,ref:"Tasks"}]
 
 }
 )
