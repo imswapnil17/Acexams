@@ -1,6 +1,7 @@
 import { ENV_VARS } from "../config/config.js";
 import User from "../Models/UserModel.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt"
 import { generateTokenAndSetCookies } from "../utils/generateToken.js";
 
 export async function signup(req,res) {
@@ -32,10 +33,11 @@ export async function signup(req,res) {
             return res.status(400).json({success:false,message:"Username Already Exists !"})
 
         }
-
+        const salt = await bcrypt.genSalt(10);
+        const hashedPass = await bcrypt.hash(password,salt)
         const newUser = new User({
             email,
-            password,
+            password : hashedPass,
             username,
             name,
         })
@@ -51,7 +53,22 @@ export async function signup(req,res) {
 }
 export async function login(req,res) {
     try{
-        
+        const {username,password} = req.body;
+        if(!username || !password){
+            return res.status(400).json({success:false,message:"All fields are Required"})
+
+        }
+        const existingUser = await User.findOne({username})
+        if(!existingUser){
+            return res.status(400).json({success:false,message:"User doesn't exist. \nPlease register first."})
+        }
+        const decodePass = await bcrypt.compare(password,existingUser.password)
+        if(!decodePass){
+            return res.status(400).json({success:false,message:"Password is not correct"})
+        }
+        generateTokenAndSetCookies(existingUser._id,res);
+        return res.status(201).json({success:true,message:"User Logged In"})
+
     }
     catch(error){
         console.error(error)
