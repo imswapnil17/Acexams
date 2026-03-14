@@ -1,3 +1,4 @@
+import User from "../Models/UserModel.js";
 
 
 export async function login(req,res) {
@@ -18,6 +19,27 @@ export async function login(req,res) {
         }
        
         const existingEmail = await User.findOne({email:email})
+
+        if(existingEmail==email){
+            res.status(400).json({success:false,message:"User Already Exists !"})
+
+        }
+        const existingUsername = await User.findOne({username:username})
+
+        if(existingUsername==username){
+            res.status(400).json({success:false,message:"Username Already Exists !"})
+
+        }
+
+        const newUser = new User({
+            email,
+            password,
+            username,
+            name,
+        })
+        await newUser.save();
+
+        res.status(201).json({success:true,user:{...newUser._id,password:""}})
 
     }
     catch(error){
