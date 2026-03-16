@@ -43,7 +43,7 @@ export async function signup(req, res) {
         })
         await newUser.save();
         generateTokenAndSetCookies(newUser._id, res)
-        return res.status(201).json({ success: true, user: { newUser, password: "" } })
+        return res.status(201).json({ success: true, user: { ...newUser._doc, password: "" } })
 
     }
     catch (error) {

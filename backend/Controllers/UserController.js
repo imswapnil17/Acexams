@@ -15,7 +15,7 @@ export const getUserData = async (req, res) => {
         if (!findUser) {
             return res.status(400).json({ success: false, message: "Please login to continue" })
         }
-        return res.status(201).json({ success: true, user: findUser })
+        return res.status(201).json({ success: true, user: {...findUser._doc,password:""} })
 
     }
     catch (error) {

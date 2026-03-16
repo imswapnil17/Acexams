@@ -2,17 +2,18 @@ import User from "../Models/UserModel.js";
 import { getUserData } from "./UserController.js";
 import Task from "../Models/TasksModel.js"
 import jwt from "jsonwebtoken"
+import { ENV_VARS } from "../config/config.js";
 export const createTask = async (req, res) => {
     try {
         if (!req.body) {
             return res.status(400).json({ success: false, message: "Fields Are Empty!" })
         }
-        const { title, author, content } = req.body;
-        if (!title || !author || !content) {
+        const { title, content } = req.body;
+        if (!title|| !content) {
             return res.status(400).json({ success: false, message: "All fields are required." })
         }
-        const userId = jwt.decode(req.cookies['jwt-acexams']).userId
-
+        const userId = jwt.verify(req.cookies['jwt-acexams'],ENV_VARS.JWT_TOKEN).userId
+        
 
         const user = await User.findOne({ _id: userId }).populate("tasks")
         const newTask = new Task({
@@ -23,7 +24,7 @@ export const createTask = async (req, res) => {
         await newTask.save()
         user.tasks.push(newTask._id)
         await user.save()
-        return res.status(200).json({ success: true, message: "New task created !" })
+        return res.status(200).json({ success: true, message: "New task created !"})
 
     }
     catch (error) {
@@ -81,5 +82,21 @@ export const deleteTask = async (req, res) => {
     catch (error) {
         console.log(error)
         return res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
+}
+
+export const getTasks = async (req,res)=>{
+    try{
+        const userId = jwt.verify(req.cookies['jwt-acexams'],ENV_VARS.JWT_TOKEN).userId
+        const Tasks = await User.findOne({_id:userId},("tasks")).populate("tasks")
+        if(!Tasks){
+            return res.status(400).json({success:"False",message:"No Tasks Found"})
+        }
+        console.log(Tasks)
+        return res.status(201).json({success:"True",message:"Tasks found",response:Tasks})
+    }
+    catch (error){
+        console.log(error)
+        return res.status(500).json({success:"false",message:"Internal Server Error"})
     }
 }

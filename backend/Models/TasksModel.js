@@ -7,6 +7,7 @@ const tasksSchema = mongoose.Schema({
     content: {type:"String",default:""},
     date: {type:Date,default:Date.now},
     
+    
 },{timestamps:true})
 
 const Task = mongoose.model("Tasks",tasksSchema)
