@@ -47,7 +47,7 @@ export const editTask = async (req, res) => {
         const updatedTask = await Task.findByIdAndUpdate(
             id,
             { title, content },
-            { new: true }
+            { returnDocument:"after" }
         )
         if (!updatedTask) {
             return res.status(404).json({ success: false, message: "Task not found" })
@@ -92,11 +92,10 @@ export const getTasks = async (req,res)=>{
         if(!Tasks){
             return res.status(400).json({success:"False",message:"No Tasks Found"})
         }
-        console.log(Tasks)
         return res.status(201).json({success:"True",message:"Tasks found",response:Tasks})
     }
     catch (error){
-        console.log(error)
+        console.error(error)
         return res.status(500).json({success:"false",message:"Internal Server Error"})
     }
 }

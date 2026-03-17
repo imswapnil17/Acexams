@@ -75,3 +75,16 @@ export async function login(req, res) {
         res.status(500).json({ success: "False", message: "Internal Server Error" })
     }
 }
+export async function logout(req,res){
+
+    try{
+        res.clearCookie('jwt-acexams')
+        return res.status(201).json({success:true,message:"User logged out successfully."})
+    }
+    catch(error){
+        console.error(error)
+        return res.status(500).json({success:false,message:"Internal Server Error"})
+    }
+
+
+}
