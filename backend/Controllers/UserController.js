@@ -91,7 +91,7 @@ export const deleteUser = async (req, res) => {
         if (!findUser) {
             return res.status(400).json({ success: false, message: "User doesn't exists" })
         }
-        return res.status(201).json({ success: true, message:"User deleted successfully"})
+        return res.status(201).json({ success: true, message:"User deleted successfully "})
 
     }
     catch (error) {

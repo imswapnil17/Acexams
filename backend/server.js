@@ -15,7 +15,7 @@ app.use(cookieParser())
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/user",protectedRoute, userRouter)
 app.use("/api/v1/task",protectedRoute,taskRouter)
-app.use("/api/v1/papers",protectedRoute,paperRouter)
+app.use("/api/v1/paper",paperRouter)
 
 app.listen(ENV_VARS.PORT, () => {
     console.log("server is live at http://localhost:" + ENV_VARS.PORT);
