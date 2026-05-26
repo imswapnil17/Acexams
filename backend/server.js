@@ -4,14 +4,17 @@ import cookieParser from "cookie-parser"
 
 import { connectDB } from "./config/db.js"
 import { ENV_VARS } from "./config/config.js"
-import authRouter from "./Routes/AuthRoutes.js"
+import authRouter from "./routes/authRoutes.js"
 import userRouter from "./routes/userRoutes.js"
 import taskRouter from "./routes/taskRoutes.js"
 import paperRouter from "./routes/paperRoutes.js"
+import cors from "cors"
 import { protectedRoute } from "./Middlewares/protectedRoute.js"
 const app = express()
 app.use(express.json())
+app.use(cors({origin:["http://localhost:5173"],credentials:true}))
 app.use(cookieParser())
+app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/user",protectedRoute, userRouter)
 app.use("/api/v1/task",protectedRoute,taskRouter)

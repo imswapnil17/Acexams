@@ -25,7 +25,6 @@ export async function signup(req, res) {
 
         if (existingEmail) {
             return res.status(400).json({ success: false, message: "User Already Exists !" })
-
         }
         const existingUsername = await User.findOne({ username: username })
 
@@ -43,7 +42,7 @@ export async function signup(req, res) {
         })
         await newUser.save();
         generateTokenAndSetCookies(newUser._id, res)
-        return res.status(201).json({ success: true, user: { ...newUser._doc, password: "" } })
+        return res.status(201).json({ success: true, user: { ...newUser._doc, password: "" }, message:"User registered successfully"})
 
     }
     catch (error) {
@@ -51,15 +50,30 @@ export async function signup(req, res) {
         return res.status(500).json({ success: "False", message: "Internal Server Error" })
     }
 }
+export async function authCheck(req,res) {
+    try{
+        const data = req.cookies['jwt-acexams']
+        if(data){
+
+            return res.status(200).json({success:true,data,message:"AuthCheck: User logged in"})
+        }
+        
+        return res.status(400).json({success:false,message:"Please login to continue"})
+    }
+    catch{
+        return res.status(500).json({success:false,message:"Internal Server Error"})
+    }
+}
 export async function login(req, res) {
     try {
-        const { username, password } = req.body;
-        if (!username || !password) {
+        if(!req.body){return res.status(400).json({sucess:false,message:"All fields are empty."})}
+        const { username_email, password } = req.body;
+        if (!username_email || !password) {
             return res.status(400).json({ success: false, message: "All fields are Required" })
 
         }
-        const existingUser = await User.findOne({ username })
-        if (!existingUser) {
+        const existingUser = await User.findOne({ username:username_email  }) || await User.findOne({email:username_email})
+        if (!existingUser ) {
             return res.status(400).json({ success: false, message: "User doesn't exist. \nPlease register first." })
         }
         const decodePass = await bcrypt.compare(password, existingUser.password)
@@ -78,7 +92,8 @@ export async function login(req, res) {
 export async function logout(req,res){
 
     try{
-        res.clearCookie('jwt-acexams')
+        console.log(req.cookies)
+        res.clearCookie("jwt-acexams")
         return res.status(201).json({success:true,message:"User logged out successfully."})
     }
     catch(error){

@@ -6,18 +6,12 @@ import User from "../Models/UserModel.js"
 import bcryptjs from "bcryptjs"
 export const getUserData = async (req, res) => {
     try {
-        if (!req.cookies) {
-            return res.status(400).json({ success: false, message: "Please login to continue" })
-        }
-        if (!req.cookies['jwt-acexams']) {
-            return res.status(400).json({ success: false, message: "Please login to continue" })
-        }
         const userId = jwt.verify(req.cookies['jwt-acexams'], ENV_VARS.JWT_TOKEN).userId;
         const findUser = await User.findOne({ _id: userId }, ("name username email -_id"))
         if (!findUser) {
             return res.status(400).json({ success: false, message: "Please login to continue" })
         }
-        return res.status(201).json({ success: true, user: { ...findUser._doc, password: "" } })
+        return res.status(201).json({ success: true, user: { ...findUser._doc  } })
 
     }
     catch (error) {

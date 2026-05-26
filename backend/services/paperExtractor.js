@@ -11,7 +11,7 @@ export async function getSubjectsByClass(class_) {
         let subjects = $(".firstLi").map((i, el) => {
             return {
                 name: $(el).find("a span").text().trim().replace(/^\s*\d+\.\s*|\s*$/g, ""),
-                uid:$(el).find("a").prop("href").match(/\/([^\/]+)\/\d+$/)[1],
+                uid: $(el).find("a").prop("href").match(/\/([^\/]+)\/\d+$/)[1],
                 id: $(el).prop('id'),
                 class: class_
             }
@@ -23,10 +23,10 @@ export async function getSubjectsByClass(class_) {
     }
 }
 
-export async function getPYP(class_,uid,id, page) {
+export async function getPYP(class_, uid, id, page) {
     const formatUrl = `${mainUrl}/books/cbse-prev-paper/english/class-${class_}th/${uid}/${id}?page=${page}`
     console.log(formatUrl);
-    
+
     try {
         const { data } = await axios.get(formatUrl);
 
@@ -37,21 +37,21 @@ export async function getPYP(class_,uid,id, page) {
         const PYPS = $(".chapterLi").map((i, el) => {
             return {
                 name: $(el).find(".chapterName").text().trim(),
-                class:class_,
-                uid:uid,
-                paper:$(el).find(".chapterName").text().trim().toLowerCase().replaceAll(/ /g,"-"),
-                id:$(el).find("a").prop("href").match(/\/(\d+)$/)?.[1],
+                class: class_,
+                uid: uid,
+                paper: $(el).find(".chapterName").text().trim().toLowerCase().replaceAll(/ /g, "-"),
+                id: $(el).find("a").prop("href").match(/\/(\d+)$/)?.[1],
             }
         }).get()
-   
-        return {data:PYPS,maxPage:maxPage}
+
+        return { data: PYPS, maxPage: maxPage }
 
     } catch (err) {
         console.error(err.message);
     }
 }
 
-export async function extractPaper(class_,uid,paper,id) {
+export async function extractPaper(class_, uid, paper, id) {
     const formatUrl = `${mainUrl}/books/cbse-prev-paper/english/class-${class_}th/${uid}/${paper}/${id}`
     console.log(formatUrl)
     try {

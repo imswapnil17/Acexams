@@ -6,8 +6,8 @@ export const generateTokenAndSetCookies = (userId,res)=>{
     
     res.cookie("jwt-acexams",token,{
         httpOnly:true,
-        secure: ENV_VARS.NODE_ENV != "development",
-        sameSite:"strict",
+        secure:ENV_VARS.NODE_ENV !="development",
+        sameSite:ENV_VARS.NODE_ENV == "development" ? "lax" : "none",
     });
     return token;
 }

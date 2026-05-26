@@ -1,4 +1,32 @@
 @import "tailwindcss";
-:root{
-   background-color: #242424;
+body,html{
+    background-color: rgb(31, 30, 30);
+}
+.page-disabled {
+  pointer-events: none;
+  opacity: 0.6; /* Optional: visual cue */
+}
+.fade-in{
+  animation:forwards ease-in 1s fade-in-animation;
+}
+.fold-out{
+  animation:forwards cubic-bezier(0,.53,.12,.86) 1s fold-out-animation, forwards ease-in 1s fade-in-animation;
+}
+@keyframes fade-in-animation{
+  0%{
+    opacity:0%;
+  }
+  100%{
+    opacity:100%;
+  }
+}
+@keyframes fold-out-animation {
+  0%{
+    transform: scaleX(0.5);
+    /* opacity: 0; */
+  }
+  100%{
+    transform: scaleX(1);
+    /* opacity: 1; */
+  }
 }
